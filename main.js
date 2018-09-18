@@ -18,6 +18,7 @@ phina.define('MainScene', {
     this.backgroundColor = '#282';
     //テキスト
     this.tama = TamaImage(this.gridX.center(), this.gridY.center(-2.5)).addChildTo(this);
+    this.initialTamaY = this.tama.y;
     this.fullname = FullNameLabel(this.gridX.center(), this.gridY.center(3)).addChildTo(this);
     this.forwardButton = ForwardButton(this.gridX.center(-3.5), this.gridY.center(5.5)).addChildTo(this);
     this.backwardButton = BackwardButton(this.gridX.center(3.5), this.gridY.center(5.5)).addChildTo(this);
@@ -32,22 +33,34 @@ phina.define('MainScene', {
     };
   },
   forwardActions: function(self){
-    self.tama.hop();
-    SoundManager.play('forward');
+    this.tweener.clear()
+    .call(function(){
+      self.tama.hop(self.initialTamaY);
+      self.stopSoundAll();
+      SoundManager.play('forward');
+    })
+    .play();
   },
   backwardActions: function(self){
     this.tweener.clear()
     .call(function(){
       self.tama.turn();
       self.fullname.turn();
+      self.stopSoundAll();
       SoundManager.play('backward');
     })
     .wait(1305)
     .call(function(){
-      self.tama.hop();
+      self.tama.hop(self.initialTamaY);
     })
     .play();
 
+  },
+  stopSoundAll: function(){
+    ['forward','backward'].forEach(function(item){
+      var sound = phina.asset.AssetManager.get('sound', item);
+      sound.stop();
+    });
   }
 });
 
@@ -58,8 +71,11 @@ phina.define('TamaImage', {
     this.x = x;
     this.y = y;
   },
-  hop: function(){
-    this.tweener
+  hop: function(initY){
+    this.tweener.clear()
+    .set({
+      y: initY
+    })
     .by({
       y: -10
     },200,"swing")
@@ -69,7 +85,10 @@ phina.define('TamaImage', {
     .play();
   },
   turn: function(){
-    this.tweener
+    this.tweener.clear()
+    .set({
+      scaleX: 1
+    })
     .to({
       scaleX: 0
     },250,"swing")
@@ -90,7 +109,7 @@ phina.define('FullNameLabel', {
     this.fill = 'pink'; // 塗りつぶし色
   },
   turn: function(){
-    this.tweener
+    this.tweener.clear()
     .to({
       scaleX: 0
     },250,"swing")
