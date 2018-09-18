@@ -24,15 +24,31 @@ phina.define('MainScene', {
     self = this;
     this.forwardButton.onpointend = function(){
       // ボタンが押されたときの処理
-      SoundManager.play('forward');
+      self.forwardActions(self);
     };
     this.backwardButton.onpointend = function(){
       // ボタンが押されたときの処理
+      self.backwardActions(self);
+    };
+  },
+  forwardActions: function(self){
+    self.tama.hop();
+    SoundManager.play('forward');
+  },
+  backwardActions: function(self){
+    this.tweener.clear()
+    .call(function(){
       self.tama.turn();
       self.fullname.turn();
       SoundManager.play('backward');
-    };
-  },
+    })
+    .wait(1305)
+    .call(function(){
+      self.tama.hop();
+    })
+    .play();
+
+  }
 });
 
 phina.define('TamaImage', {
@@ -44,11 +60,11 @@ phina.define('TamaImage', {
   },
   hop: function(){
     this.tweener
-    .to({
-      y: 10
-    },200,"swing")
-    .to({
+    .by({
       y: -10
+    },200,"swing")
+    .by({
+      y: 10
     },200,"swing")
     .play();
   },
@@ -56,10 +72,10 @@ phina.define('TamaImage', {
     this.tweener
     .to({
       scaleX: 0
-    },200,"swing")
+    },250,"swing")
     .to({
       scaleX: 1
-    },200,"swing")
+    },250,"swing")
     .play();
   }
 });
@@ -77,10 +93,10 @@ phina.define('FullNameLabel', {
     this.tweener
     .to({
       scaleX: 0
-    },200,"swing")
+    },250,"swing")
     .to({
       scaleX: 1
-    },200,"swing")
+    },250,"swing")
     .play();
   }
 });
