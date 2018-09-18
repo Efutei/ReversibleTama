@@ -18,9 +18,11 @@ phina.define('MainScene', {
     this.backgroundColor = '#282';
     //テキスト
     this.tama = TamaImage(this.gridX.center(), this.gridY.center(-2.5)).addChildTo(this);
+    this.initialTamaY = this.tama.y;
     this.fullname = FullNameLabel(this.gridX.center(), this.gridY.center(3)).addChildTo(this);
     this.forwardButton = ForwardButton(this.gridX.center(-3.5), this.gridY.center(5.5)).addChildTo(this);
     this.backwardButton = BackwardButton(this.gridX.center(3.5), this.gridY.center(5.5)).addChildTo(this);
+    this.tweetButton = TweetButton(this.gridX.center(5), this.gridY.center(-7)).addChildTo(this);
     self = this;
     this.forwardButton.onpointend = function(){
       // ボタンが押されたときの処理
@@ -30,24 +32,44 @@ phina.define('MainScene', {
       // ボタンが押されたときの処理
       self.backwardActions(self);
     };
+    this.tweetButton.onclick = function() {
+      var url = phina.social.Twitter.createURL({
+        text : '',
+        hashtags: '逆から読んでも夜桜たま',
+        url: 'https://efutei.github.io/ReversibleTama/',
+      });
+      window.open(url, 'share window', 'width=480, height=320');
+    };
   },
   forwardActions: function(self){
-    self.tama.hop();
-    SoundManager.play('forward');
+    this.tweener.clear()
+    .call(function(){
+      self.tama.hop(self.initialTamaY);
+      self.stopSoundAll();
+      SoundManager.play('forward');
+    })
+    .play();
   },
   backwardActions: function(self){
     this.tweener.clear()
     .call(function(){
       self.tama.turn();
       self.fullname.turn();
+      self.stopSoundAll();
       SoundManager.play('backward');
     })
     .wait(1305)
     .call(function(){
-      self.tama.hop();
+      self.tama.hop(self.initialTamaY);
     })
     .play();
 
+  },
+  stopSoundAll: function(){
+    ['forward','backward'].forEach(function(item){
+      var sound = phina.asset.AssetManager.get('sound', item);
+      sound.stop();
+    });
   }
 });
 
@@ -58,8 +80,11 @@ phina.define('TamaImage', {
     this.x = x;
     this.y = y;
   },
-  hop: function(){
-    this.tweener
+  hop: function(initY){
+    this.tweener.clear()
+    .set({
+      y: initY
+    })
     .by({
       y: -10
     },200,"swing")
@@ -69,7 +94,10 @@ phina.define('TamaImage', {
     .play();
   },
   turn: function(){
-    this.tweener
+    this.tweener.clear()
+    .set({
+      scaleX: 1
+    })
     .to({
       scaleX: 0
     },250,"swing")
@@ -90,7 +118,7 @@ phina.define('FullNameLabel', {
     this.fill = 'pink'; // 塗りつぶし色
   },
   turn: function(){
-    this.tweener
+    this.tweener.clear()
     .to({
       scaleX: 0
     },250,"swing")
@@ -133,6 +161,22 @@ phina.define('BackwardButton', {
     this.x = x;
     this.y = y;
     this.text = "逆から読む";    // 表示文字
+  }
+});
+
+phina.define('TweetButton', {
+  superClass: 'Button',
+  init: function (x, y) {
+    this.superInit();
+    this.x = x;
+    this.y = y;
+    this.text = "ツイートする"
+    this.width = 155;         // 横サイズ
+    this.height =  35;        // 縦サイズ
+    this.fontSize = 24;       // 文字サイズ
+    this.fontColor = 'white'; // 文字色
+    this.cornerRadius = 5;   // 角丸み
+    this.fill = 'skyblue';    // ボタン色
   }
 });
 
