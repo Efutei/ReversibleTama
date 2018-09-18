@@ -15,7 +15,7 @@ phina.define('MainScene', {
   init: function() {
     this.superInit();
     // 背景色を指定
-    this.backgroundColor = '#444';
+    this.backgroundColor = '#282';
     //テキスト
     this.tama = TamaImage(this.gridX.center(), this.gridY.center(-2.5)).addChildTo(this);
     this.fullname = FullNameLabel(this.gridX.center(), this.gridY.center(3)).addChildTo(this);
@@ -24,15 +24,31 @@ phina.define('MainScene', {
     self = this;
     this.forwardButton.onpointend = function(){
       // ボタンが押されたときの処理
-      SoundManager.play('forward');
+      self.forwardActions(self);
     };
     this.backwardButton.onpointend = function(){
       // ボタンが押されたときの処理
+      self.backwardActions(self);
+    };
+  },
+  forwardActions: function(self){
+    self.tama.hop();
+    SoundManager.play('forward');
+  },
+  backwardActions: function(self){
+    this.tweener.clear()
+    .call(function(){
       self.tama.turn();
       self.fullname.turn();
       SoundManager.play('backward');
-    };
-  },
+    })
+    .wait(1305)
+    .call(function(){
+      self.tama.hop();
+    })
+    .play();
+
+  }
 });
 
 phina.define('TamaImage', {
@@ -44,11 +60,11 @@ phina.define('TamaImage', {
   },
   hop: function(){
     this.tweener
-    .to({
-      y: 10
-    },200,"swing")
-    .to({
+    .by({
       y: -10
+    },200,"swing")
+    .by({
+      y: 10
     },200,"swing")
     .play();
   },
@@ -56,10 +72,10 @@ phina.define('TamaImage', {
     this.tweener
     .to({
       scaleX: 0
-    },200,"swing")
+    },250,"swing")
     .to({
       scaleX: 1
-    },200,"swing")
+    },250,"swing")
     .play();
   }
 });
@@ -71,16 +87,16 @@ phina.define('FullNameLabel', {
     this.x = x;
     this.y = y;
     this.fontSize = "80";
-    this.fill = 'white'; // 塗りつぶし色
+    this.fill = 'pink'; // 塗りつぶし色
   },
   turn: function(){
     this.tweener
     .to({
       scaleX: 0
-    },200,"swing")
+    },250,"swing")
     .to({
       scaleX: 1
-    },200,"swing")
+    },250,"swing")
     .play();
   }
 });
@@ -95,7 +111,7 @@ phina.define('ReadButton', {
     this.fontColor = 'red'; // 文字色
     this.cornerRadius = 5;   // 角丸み
     this.fill = 'white';    // ボタン色
-    this.stroke = 'green';     // 枠色
+    this.stroke = 'orange';     // 枠色
     this.strokeWidth = 12;     // 枠太さ
   }
 });
