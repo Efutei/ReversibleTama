@@ -21,6 +21,7 @@ phina.define('MainScene', {
     this.fullname = FullNameLabel(this.gridX.center(), this.gridY.center(3)).addChildTo(this);
     this.forwardButton = ForwardButton(this.gridX.center(-3.5), this.gridY.center(5.5)).addChildTo(this);
     this.backwardButton = BackwardButton(this.gridX.center(3.5), this.gridY.center(5.5)).addChildTo(this);
+    this.tweetButton = TweetButton(this.gridX.center(5), this.gridY.center(-7)).addChildTo(this);
     self = this;
     this.forwardButton.onpointend = function(){
       // ボタンが押されたときの処理
@@ -29,6 +30,14 @@ phina.define('MainScene', {
     this.backwardButton.onpointend = function(){
       // ボタンが押されたときの処理
       self.backwardActions(self);
+    };
+    this.tweetButton.onclick = function() {
+      var url = phina.social.Twitter.createURL({
+        text : '',
+        hashtags: '逆から読んでも夜桜たま',
+        url: 'https://efutei.github.io/ReversibleTama/',
+      });
+      window.open(url, 'share window', 'width=480, height=320');
     };
   },
   forwardActions: function(self){
@@ -133,6 +142,22 @@ phina.define('BackwardButton', {
     this.x = x;
     this.y = y;
     this.text = "逆から読む";    // 表示文字
+  }
+});
+
+phina.define('TweetButton', {
+  superClass: 'Button',
+  init: function (x, y) {
+    this.superInit();
+    this.x = x;
+    this.y = y;
+    this.text = "ツイートする"
+    this.width = 155;         // 横サイズ
+    this.height =  35;        // 縦サイズ
+    this.fontSize = 24;       // 文字サイズ
+    this.fontColor = 'white'; // 文字色
+    this.cornerRadius = 5;   // 角丸み
+    this.fill = 'skyblue';    // ボタン色
   }
 });
 
