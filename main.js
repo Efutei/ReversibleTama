@@ -24,6 +24,7 @@ phina.define('MainScene', {
     self = this;
     this.forwardButton.onpointend = function(){
       // ボタンが押されたときの処理
+      self.tama.hop();
       SoundManager.play('forward');
     };
     this.backwardButton.onpointend = function(){
@@ -44,11 +45,11 @@ phina.define('TamaImage', {
   },
   hop: function(){
     this.tweener
-    .to({
-      y: 10
-    },200,"swing")
-    .to({
+    .by({
       y: -10
+    },200,"swing")
+    .by({
+      y: 10
     },200,"swing")
     .play();
   },
