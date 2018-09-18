@@ -44,7 +44,7 @@ phina.define('MainScene', {
   backwardActions: function(self){
     this.tweener.clear()
     .call(function(){
-      self.tama.turn();
+      self.tama.turn(self.initialTamaY);
       self.fullname.turn();
       self.stopSoundAll();
       SoundManager.play('backward');
@@ -74,6 +74,7 @@ phina.define('TamaImage', {
   hop: function(initY){
     this.tweener.clear()
     .set({
+      scaleX: 1,
       y: initY
     })
     .by({
@@ -84,10 +85,11 @@ phina.define('TamaImage', {
     },200,"swing")
     .play();
   },
-  turn: function(){
+  turn: function(initY){
     this.tweener.clear()
     .set({
-      scaleX: 1
+      scaleX: 1,
+      y: initY
     })
     .to({
       scaleX: 0
@@ -110,6 +112,9 @@ phina.define('FullNameLabel', {
   },
   turn: function(){
     this.tweener.clear()
+    .set({
+      scaleX: 1
+    })
     .to({
       scaleX: 0
     },250,"swing")
