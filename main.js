@@ -18,7 +18,11 @@ phina.define('MainScene', {
   init: function() {
     this.superInit();
     // 背景色を指定
-    this.backgroundColor = '#282';
+    var grad = Canvas.createLinearGradient(this.gridX.center(-8), this.gridY.center(), this.gridX.center(8), this.gridY.center());
+    grad.addColorStop(0, '#272');
+    grad.addColorStop(0.5, '#060');
+    grad.addColorStop(1, '#272');
+    this.backgroundColor = grad;
     //テキスト
     this.tama = TamaImage(this.gridX.center(), this.gridY.center(-2.5)).addChildTo(this);
     this.initialTamaY = this.tama.y;
