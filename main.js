@@ -8,6 +8,9 @@ var ASSETS = {
     forward: './sound/yozakuratama.wav',
     backward: './sound/gyakukara.wav',
   },
+  font: {
+    kosugi: './font/yozakura.ttf',
+  }
 };
 // MainScene クラスを定義
 phina.define('MainScene', {
@@ -15,7 +18,11 @@ phina.define('MainScene', {
   init: function() {
     this.superInit();
     // 背景色を指定
-    this.backgroundColor = '#282';
+    var grad = Canvas.createLinearGradient(this.gridX.center(-8), this.gridY.center(), this.gridX.center(8), this.gridY.center());
+    grad.addColorStop(0, '#272');
+    grad.addColorStop(0.5, '#060');
+    grad.addColorStop(1, '#272');
+    this.backgroundColor = grad;
     //テキスト
     this.tama = TamaImage(this.gridX.center(), this.gridY.center(-2.5)).addChildTo(this);
     this.initialTamaY = this.tama.y;
@@ -116,6 +123,7 @@ phina.define('FullNameLabel', {
     this.superInit('夜 桜 た ま');
     this.x = x;
     this.y = y;
+    this.fontFamily = 'kosugi';
     this.fontSize = "80";
     this.fill = 'pink'; // 塗りつぶし色
   },
@@ -155,6 +163,7 @@ phina.define('ForwardButton', {
     this.superInit();
     this.x = x;
     this.y = y;
+    this.fontFamily = 'kosugi';
     this.text = "前から読む";    // 表示文字
   }
 });
@@ -165,6 +174,7 @@ phina.define('BackwardButton', {
     this.superInit();
     this.x = x;
     this.y = y;
+    this.fontFamily = 'kosugi';
     this.text = "逆から読む";    // 表示文字
   }
 });
@@ -176,6 +186,7 @@ phina.define('TweetButton', {
     this.x = x;
     this.y = y;
     this.text = "ツイートする"
+    this.fontFamily = 'kosugi';
     this.width = 155;         // 横サイズ
     this.height =  35;        // 縦サイズ
     this.fontSize = 24;       // 文字サイズ
